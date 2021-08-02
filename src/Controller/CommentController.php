@@ -2,13 +2,13 @@
 
 namespace App\Controller;
 
-use App\Entity\Commande;
+use App\Entity\Subject;
 use App\Entity\Comment;
 
 use Symfony\Component\Mime\Email;
 use App\Form\CommentType;
 use App\Repository\ClientRepository;
-use App\Repository\CommandeRepository;
+use App\Repository\SubjectRepository;
 use App\Repository\CommentRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -37,7 +37,7 @@ class CommentController extends AbstractController
     /**
      * @Route("/new", name="oeuvre_new")
      */
-    public function new(Request $request, MailerInterface $mailer,NormalizerInterface $Normalizer, CommandeRepository $commandeRepository, ClientRepository $clientRepo, $idClient = 1, $idOeuvre = 1): Response
+    public function new(Request $request, MailerInterface $mailer, NormalizerInterface $Normalizer, SubjectRepository $commandeRepository, ClientRepository $clientRepo, $idClient = 1, $idOeuvre = 1): Response
     {
         $entityManager = $this->getDoctrine()->getManager();
         $idClient = 1;
@@ -47,11 +47,12 @@ class CommentController extends AbstractController
             ->from('mohamedrayane.douss@esprit.tn')
             ->to('doussrayen12@gmail.com')
 
-            ->subject('Time for Symfony Mailer!')
+            ->subject('New notification!')
             ->text('Sending emails is fun again!')
-            ->html('<p>See Twig integration for better HTML integration!</p>');
+            ->html('<p>new comment in your post!</p>');
 
-        $mailer->send($email);        //$commande->setDateCommande();
+        $mailer->send($email);
+        //$commande->setDateCommande();
         $oeuvre->setMsg($request->get('msg'));
 
         $oeuvre->setCreateAt(new \DateTime());

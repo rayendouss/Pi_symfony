@@ -35,7 +35,7 @@ class Client
     private $surname;
 
     /**
-     * @ORM\OneToMany(targetEntity=Commande::class, mappedBy="client")
+     * @ORM\OneToMany(targetEntity=Subject::class, mappedBy="client")
      */
     private $commandes;
 
@@ -74,14 +74,14 @@ class Client
     }
 
     /**
-     * @return Collection|Commande[]
+     * @return Collection|Subject[]
      */
     public function getCommandes(): Collection
     {
         return $this->commandes;
     }
 
-    public function addCommande(Commande $commande): self
+    public function addCommande(Subject $commande): self
     {
         if (!$this->commandes->contains($commande)) {
             $this->commandes[] = $commande;
@@ -91,7 +91,7 @@ class Client
         return $this;
     }
 
-    public function removeCommande(Commande $commande): self
+    public function removeCommande(Subject $commande): self
     {
         if ($this->commandes->removeElement($commande)) {
             // set the owning side to null (unless already changed)

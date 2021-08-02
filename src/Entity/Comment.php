@@ -32,7 +32,7 @@ class Comment
      */
     private $create_at;
     /**
-     * @ORM\ManyToOne(targetEntity=Commande::class, inversedBy="oeuvres")
+     * @ORM\ManyToOne(targetEntity=Subject::class, inversedBy="oeuvres")
      * @Groups("cmd")
      */
     private $commande;

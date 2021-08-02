@@ -2,13 +2,15 @@
 
 namespace App\Controller;
 
-use App\Entity\Commande;
-use App\Form\CommandeType;
+use App\Entity\Subject;
+use App\Form\SubjectType;
 use App\Repository\ClientRepository;
 use App\Repository\CommandeRepository;
 use App\Repository\CommentRepository;
+use App\Repository\SubjectRepository;
 use Doctrine\ORM\Mapping\Id;
 use Normalizer;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -22,13 +24,13 @@ use Symfony\Component\Validator\Constraints\Date;
 /**
  * @Route("/commande")
  */
-class CommandeController extends AbstractController
+class SubjectController extends AbstractController
 
 {
     /**
      * @Route("/alljson", name="commandeAöö")
      */
-    public function alljson(CommandeRepository $commandeRepository, NormalizerInterface $Normalizer): Response
+    public function alljson(SubjectRepository $commandeRepository, NormalizerInterface $Normalizer): Response
     {
         /* $commandes=$commandeRepository->findAll(); */
         $commandes = $commandeRepository->findAll() ;
@@ -45,11 +47,13 @@ class CommandeController extends AbstractController
     }
 
     /**
-     * @Route("/subject/{id}", name="subjetidd")
+     * @Route("/subject/{id}", name="subjetidd", requirements={"id":"\d+"})
+
      */
-    public function getsubject(Request $request,CommandeRepository $commandeRepository, NormalizerInterface $Normalizer): Response
+    public function getsubject(Request $request, SubjectRepository $commandeRepository, NormalizerInterface $Normalizer): Response
     {
         /* $commandes=$commandeRepository->findAll(); */
+
 
         $commandes = $commandeRepository->find($request->get('id')) ;
 
@@ -84,7 +88,7 @@ class CommandeController extends AbstractController
     /**
      * @Route("/", name="commande_index")
      */
-    public function commandesNotDone(CommandeRepository $commandeRepository, NormalizerInterface $Normalizer): Response
+    public function commandesNotDone(SubjectRepository $commandeRepository, NormalizerInterface $Normalizer): Response
     {
         /* $commandes=$commandeRepository->findAll(); */
         $commandes = $commandeRepository->findBy(["done" => false , "client" => 1]);
@@ -107,7 +111,7 @@ class CommandeController extends AbstractController
         $entityManager = $this->getDoctrine()->getManager();
         $idClient = 1;
         $idOeuvre = 1;
-        $commande = new Commande();
+        $commande = new Subject();
 
         //$commande->setDateCommande();
          $commande->setMsg($request->get('msg'));
@@ -131,8 +135,8 @@ class CommandeController extends AbstractController
      */
     public function new(Request $request): Response
     {
-        $commande = new Commande();
-        $form = $this->createForm(CommandeType::class, $commande);
+        $commande = new Subject();
+        $form = $this->createForm(SubjectType::class, $commande);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -152,7 +156,7 @@ class CommandeController extends AbstractController
     /**
      * @Route("/{id}", name="commande_show", methods={"GET"})
      */
-    public function show(Commande $commande, CommandeRepository   $commandeRepository): Response
+    public function show(Subject $commande, SubjectRepository   $commandeRepository): Response
     {
         $entityManager = $this->getDoctrine()->getManager();
         $oeu = $commandeRepository->find($commande->getId());
@@ -162,7 +166,7 @@ class CommandeController extends AbstractController
     /**
      * @Route("/clientid/", name="commande_show")
      */
-    public function findbyclientid(Commande $commande, CommandeRepository $repo): Response
+    public function findbyclientid(Subject $commande, SubjectRepository $repo): Response
     {
         $commandesclient = $repo->findOneBySomeField(1);
 
@@ -176,7 +180,7 @@ class CommandeController extends AbstractController
     /**
      * @Route("/confirmCommandeJSON", name="confirmCommandeJSON", methods={"GET","POST"})
      */
-    public function edit(MailerInterface $mailer , Request $request, CommandeRepository $commandeRepository, CommentRepository $oeuvreRepository, NormalizerInterface $Normalizer): Response
+    public function edit(MailerInterface $mailer , Request $request, SubjectRepository $commandeRepository, CommentRepository $oeuvreRepository, NormalizerInterface $Normalizer): Response
     {
 
         $commandes = $commandeRepository->findBy(["done" => false]);
@@ -214,7 +218,7 @@ $mailer->send($email);
 
 
 
-        /* $form = $this->createForm(CommandeType::class, $commande);
+        /* $form = $this->createForm(SubjectType::class, $commande);
         $form->handleRequest($request); */
 
         /* if ($form->isSubmitted() && $form->isValid()) {
@@ -233,7 +237,7 @@ $mailer->send($email);
     /**
      * @Route("/deleteCommandeJSON/{id}", name="deleteCommandeJson",methods={"DELETE"})
      */
-    public function delete(Request $request, Commande $commandeToDelete, NormalizerInterface $Normalizer, CommandeRepository $CommandeRepo, $id): Response
+    public function delete(Request $request, Subject $commandeToDelete, NormalizerInterface $Normalizer, SubjectRepository $CommandeRepo, $id): Response
     {
         /* if ($this->isCsrfTokenValid('delete'.$commande->getId(), $request->request->get('_token'))) { */
         $entityManager = $this->getDoctrine()->getManager();
@@ -244,7 +248,7 @@ $mailer->send($email);
         $entityManager->remove($commandeToDelete);
         $entityManager->flush();
         $json = $Normalizer->normalize($commandeToDelete,  'json', ['groups' => 'cmd']);
-        return new Response("Commande deleted" . json_encode($json));
+        return new Response("Subject deleted" . json_encode($json));
         /*  } */
 
         /* return $this->redirectToRoute('commande_index'); */
